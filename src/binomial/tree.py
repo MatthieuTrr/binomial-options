@@ -1,5 +1,10 @@
 import numpy as np
 def payoff(S,K,option_type='call'):
+    """
+    S: prix du sous-jacent
+    K: strike
+    """
+    # calcul du payoff d'une option européenne de type call ou put à l'échéance
     if option_type == 'call':
         return np.maximum(S-K,0)
     elif option_type == 'put':
@@ -18,6 +23,10 @@ def CRR_param(sig,r,dt):
     return u,d,p
 
 def eu_opt_pricing(sig,r,T,dt,S0,K,option_type='call'):
+    """
+    S0: prix initial du sous-jacent
+    """
+    # Estimation du prix d'une opt° euro. par arbre binomial
     u,d,p=CRR_param(sig,r,dt)
     n=int(round(T/dt))
     j=np.arange(n+1)
