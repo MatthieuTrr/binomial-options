@@ -17,17 +17,11 @@ def CRR_param(sig,r,dt):
         raise ValueError("Arbitrage detected: d < exp(r*dt) < u condition not satisfied.")
     return u,d,p
 
-def CRR_Tree(u,d,p,r,T,dt,S0,K,option_type='call'):
+def eu_opt_pricing(sig,r,T,dt,S0,K,option_type='call'):
+    u,d,p=CRR_param(sig,r,dt)
     n=int(round(T/dt))
-    stock_tree=np.zeros((n+1,n+1))
-    stock_tree[0,0]=S0
-    for i in range (0,n+1):
-        for j in range (0,n+1):
-            stock_tree[i,j]=S0*u**(j-i)*d**i
-
-    opt_tree=np.zeros((n+1,n+1))
-    opt_tree[:,n]=payoff(stock_tree[:,n],K,option_type)
-    for i in range(0,n):
-        for j in range(0,n-i):
-            opt_tree[j,n-i-1]=np.exp(-r*dt)*(p*opt_tree[j,n-i]+(1-p)*opt_tree[j+1,n-i])
-    return opt_tree[0,0]
+    j=np.arange(n+1)
+    price=payoff(S0*u**j*d**(n-j),K,option_type)
+    for i in range(n-1,-1,-1):
+        price= np.exp(-r*dt)*(p*price[1:i+2]+(1-p)*price[0:i+1])
+    return price[0]

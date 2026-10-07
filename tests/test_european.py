@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from binomial.tree import CRR_Tree, CRR_param
+from binomial.tree import eu_opt_pricing, CRR_param
 
 
 PARAMS= [
@@ -12,9 +12,8 @@ PARAMS= [
 def test_put_call_parity(S0, K, sig, r):
     T = 1
     dt = 1/12
-    u, d, p = CRR_param(sig, r, dt)
-    call_price = CRR_Tree(u, d, p,r, T, dt, S0, K, option_type='call')
-    put_price = CRR_Tree(u, d, p,r, T, dt, S0, K, option_type='put')
+    call_price = eu_opt_pricing(sig, r, T, dt, S0, K, option_type='call')
+    put_price = eu_opt_pricing(sig, r, T, dt, S0, K, option_type='put')
     # Vérification de la parité put-call
     assert call_price - put_price == pytest.approx(S0 - K * np.exp(-r * T), abs=1e-8)
 
@@ -22,8 +21,7 @@ def test_put_call_parity(S0, K, sig, r):
 def test_positive_prices(S0, K, sig, r):
     T = 1
     dt = 1/12
-    u, d, p = CRR_param(sig, r, dt)
-    call_price = CRR_Tree(u, d, p,r, T, dt, S0, K, option_type='call')
-    put_price = CRR_Tree(u, d, p,r, T, dt, S0, K, option_type='put')
+    call_price = eu_opt_pricing(sig, r, T, dt, S0, K, option_type='call')
+    put_price = eu_opt_pricing(sig, r, T, dt, S0, K, option_type='put')
     assert call_price >= 0
     assert put_price >= 0
