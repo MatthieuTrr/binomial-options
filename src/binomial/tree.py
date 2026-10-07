@@ -1,15 +1,21 @@
 import numpy as np
 #cd OneDrive/Documents/PolytechNS/MAM5/Projets Persos Finance/binomial-options/src/binomial
 def payoff(S,K):
-    return np.max(S-K,0)
+    return np.maximum(S-K,0)
 
-def CRR_Tree(sig,r,dt,T,S0,K):
+def CRR_param(sig,r,dt):
     """
     sig: volatilité, r: taux sans risque, dt: pas de temps
     """
     u=np.exp(sig*np.sqrt(dt))
     d=1/u
     p=(np.exp(r*dt)-d)/(u-d)
+    # vérification de l'absence d'arbitrage
+    if not (d < np.exp(r*dt) < u):
+        raise ValueError("Arbitrage detected: d < exp(r*dt) < u condition not satisfied.")
+    return u,d,p
+
+def CRR_Tree(u,d,p,T,S0,K):
     # vérification de l'absence d'arbitrage
     if not (d < np.exp(r*dt) < u):
         return
