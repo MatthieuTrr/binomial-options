@@ -22,15 +22,18 @@ def CRR_param(sig,r,dt):
         raise ValueError("Arbitrage detected: d < exp(r*dt) < u condition not satisfied.")
     return u,d,p
 
-def eu_opt_pricing(sig,r,T,dt,S0,K,option_type='call'):
+def eu_opt_pricing(sig, r, T, N, S0, K, option_type='call'):
     """
     S0: prix initial du sous-jacent
     """
+    if int(N)!=N:
+        raise ValueError("N doit être un entier.")
     # Estimation du prix d'une opt° euro. par arbre binomial
-    u,d,p=CRR_param(sig,r,dt)
-    n=int(round(T/dt))
-    j=np.arange(n+1)
-    price=payoff(S0*u**j*d**(n-j),K,option_type)
-    for i in range(n-1,-1,-1):
-        price= np.exp(-r*dt)*(p*price[1:i+2]+(1-p)*price[0:i+1])
+    dt = T / N
+    u, d, p = CRR_param(sig, r, dt)
+    j = np.arange(N + 1)
+    price = payoff(S0 * u**j * d**(N - j), K, option_type)
+    disc = np.exp(-r * dt)
+    for i in range(N - 1, -1, -1):
+        price = disc * (p * price[1:i+2] + (1 - p) * price[0:i+1])
     return price[0]
