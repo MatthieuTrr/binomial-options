@@ -17,9 +17,7 @@ pytest
 - [x] Validation du pricing par arbre binomial, par comparaison avec Black-Scholes
 
 ## A faire
-- [ ] Pricing par résolution de l'EDP de Black Scholes (différences finies, schéma explicite)
-
-- [ ] Pricing par résolution de l'EDP de Black Scholes (schéma implicite)
+- [ ] Pricing par résolution de l'EDP de Black Scholes (Runge-Kutta)
 
 - [ ] Pricing par arbre binomial des options américaines
 
